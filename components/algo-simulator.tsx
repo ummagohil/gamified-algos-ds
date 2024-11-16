@@ -8,6 +8,21 @@ import { Textarea } from "@/components/ui/textarea"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
+
+/**
+ * @TODO: 
+ * - split each algo into different components
+ * - create code blocks for each level of algo and ensure this functionality works 
+ * - create better visuals for the algorithms 
+ *  - a tree for binary
+ *  - animation to show the sorting of a bubble sort
+ *  - a stack of boxes for stack
+ *  - a queue of boxes for queue
+ *  - a linked list of boxes for linked list
+ * - add leetcode like examples feature/section
+ *  - map this to level of difficulty
+ * - provide detailed explanation of each algo (if wanted to be fancy, could implement AI here)
+ */
 type AlgorithmType = 'stack' | 'queue' | 'bubbleSort' | 'quickSort' | 'binarySearchTree' | 'linkedList' | 'mergeSort'
 
 export function AlgoSimulator() {
