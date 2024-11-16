@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-type AlgorithmType = 'stack' | 'queue' | 'bubbleSort' | 'quickSort'
+type AlgorithmType = 'stack' | 'queue' | 'bubbleSort' | 'quickSort' | 'binarySearchTree' | 'linkedList' | 'mergeSort'
 
 export function AlgoSimulator() {
   const [algorithmType, setAlgorithmType] = useState<AlgorithmType>('stack')
@@ -17,6 +17,7 @@ export function AlgoSimulator() {
   const [level, setLevel] = useState<'beginner' | 'intermediate' | 'advanced'>('beginner')
   const [animationSteps, setAnimationSteps] = useState<number[][]>([])
   const [currentStep, setCurrentStep] = useState(0)
+  const [error, setError] = useState<string | null>(null)
 
   const getStarterCode = () => {
     switch (algorithmType) {
@@ -44,7 +45,9 @@ push(3);
 push(8);
 pop();
 push(1);
-pop();`
+pop();
+
+console.log("Final stack:", stack);`
       case 'queue':
         return `// Queue implementation
 const queue = [];
@@ -69,7 +72,9 @@ enqueue(3);
 enqueue(8);
 dequeue();
 enqueue(1);
-dequeue();`
+dequeue();
+
+console.log("Final queue:", queue);`
       case 'bubbleSort':
         return `// Bubble Sort implementation
 function bubbleSort(arr) {
@@ -84,6 +89,7 @@ function bubbleSort(arr) {
         [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
         swapped = true;
         console.log(\`Swapped \${arr[i]} and \${arr[i + 1]}\`);
+        console.log("Current array:", [...arr]);
       }
     }
   } while (swapped);
@@ -118,7 +124,7 @@ function quickSort(arr) {
     }
   }
 
-  console.log(\`Partitioned around pivot \${pivot}: Left \${left}, Equal \${equal}, Right \${right}\`);
+  console.log(\`Partitioned around pivot \${pivot}: Left \${JSON.stringify(left)}, Equal \${JSON.stringify(equal)}, Right \${JSON.stringify(right)}\`);
   return [...quickSort(left), ...equal, ...quickSort(right)];
 }
 
@@ -126,6 +132,189 @@ function quickSort(arr) {
 const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
 console.log("Unsorted array:", unsortedArray);
 const sortedArray = quickSort(unsortedArray);
+console.log("Sorted array:", sortedArray);`
+      case 'binarySearchTree':
+        return `// Binary Search Tree implementation
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
+
+class BinarySearchTree {
+  constructor() {
+    this.root = null;
+  }
+
+  insert(value) {
+    const newNode = new Node(value);
+    if (this.root === null) {
+      this.root = newNode;
+      console.log(\`Inserted \${value} as root\`);
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+  }
+
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+        console.log(\`Inserted \${newNode.value} to the left of \${node.value}\`);
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+        console.log(\`Inserted \${newNode.value} to the right of \${node.value}\`);
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+
+  inOrderTraversal(node = this.root) {
+    if (node !== null) {
+      this.inOrderTraversal(node.left);
+      console.log(node.value);
+      this.inOrderTraversal(node.right);
+    }
+  }
+}
+
+// Test the BST
+const bst = new BinarySearchTree();
+bst.insert(50);
+bst.insert(30);
+bst.insert(70);
+bst.insert(20);
+bst.insert(40);
+bst.insert(60);
+bst.insert(80);
+
+console.log("In-order traversal:");
+bst.inOrderTraversal();`
+      case 'linkedList':
+        return `// Linked List implementation
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
+
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
+
+  append(value) {
+    const newNode = new Node(value);
+    if (!this.head) {
+      this.head = newNode;
+      console.log(\`Appended \${value} as head\`);
+      return;
+    }
+    let current = this.head;
+    while (current.next) {
+      current = current.next;
+    }
+    current.next = newNode;
+    console.log(\`Appended \${value}\`);
+  }
+
+  prepend(value) {
+    const newNode = new Node(value);
+    newNode.next = this.head;
+    this.head = newNode;
+    console.log(\`Prepended \${value}\`);
+  }
+
+  delete(value) {
+    if (!this.head) {
+      console.log("List is empty");
+      return;
+    }
+    if (this.head.value === value) {
+      this.head = this.head.next;
+      console.log(\`Deleted \${value} from head\`);
+      return;
+    }
+    let current = this.head;
+    while (current.next) {
+      if (current.next.value === value) {
+        current.next = current.next.next;
+        console.log(\`Deleted \${value}\`);
+        return;
+      }
+      current = current.next;
+    }
+    console.log(\`\${value} not found in the list\`);
+  }
+
+  print() {
+    let current = this.head;
+    const values = [];
+    while (current) {
+      values.push(current.value);
+      current = current.next;
+    }
+    console.log("Linked List:", values.join(" -> "));
+  }
+}
+
+// Test the Linked List
+const list = new LinkedList();
+list.append(10);
+list.append(20);
+list.prepend(5);
+list.append(30);
+list.print();
+list.delete(20);
+list.print();`
+      case 'mergeSort':
+        return `// Merge Sort implementation
+function mergeSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
+  }
+
+  const mid = Math.floor(arr.length / 2);
+  const left = arr.slice(0, mid);
+  const right = arr.slice(mid);
+
+  console.log(\`Splitting: Left \${JSON.stringify(left)}, Right \${JSON.stringify(right)}\`);
+
+  return merge(mergeSort(left), mergeSort(right));
+}
+
+function merge(left, right) {
+  let result = [];
+  let leftIndex = 0;
+  let rightIndex = 0;
+
+  while (leftIndex < left.length && rightIndex < right.length) {
+    if (left[leftIndex] < right[rightIndex]) {
+      result.push(left[leftIndex]);
+      leftIndex++;
+    } else {
+      result.push(right[rightIndex]);
+      rightIndex++;
+    }
+  }
+
+  const mergedArray = [...result, ...left.slice(leftIndex), ...right.slice(rightIndex)];
+  console.log(\`Merged: \${JSON.stringify(mergedArray)}\`);
+  return mergedArray;
+}
+
+// Test the algorithm
+const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
+console.log("Unsorted array:", unsortedArray);
+const sortedArray = mergeSort(unsortedArray);
 console.log("Sorted array:", sortedArray);`
       default:
         return ''
@@ -137,6 +326,7 @@ console.log("Sorted array:", sortedArray);`
   }, [algorithmType, level])
 
   const executeCode = () => {
+    setError(null)
     const tempItems: number[] = []
     const logs: string[] = []
     const steps: number[][] = []
@@ -148,39 +338,61 @@ console.log("Sorted array:", sortedArray);`
     try {
       // eslint-disable-next-line no-new-func
       new Function('console', code)({ log: consoleLog })
-    } catch (error:any) {
-      consoleLog(`Error: ${error.message}`)
+    } catch (error: any | Error ) {
+      setError(`Error: ${error.message}`)
+      return
     }
 
     // Extract items and animation steps from the logs
     logs.forEach(log => {
-      if (log.startsWith('Pushed ') || log.startsWith('Enqueued ')) {
+      if (log.startsWith('Pushed ') || log.startsWith('Enqueued ') || log.startsWith('Appended ') || log.startsWith('Prepended ')) {
         const match = log.match(/\d+/)
-        if (match) tempItems.push(Number(match[0]))
-      } else if (log.startsWith('Popped ') || log.startsWith('Dequeued ')) {
-        if (algorithmType === 'stack') tempItems.pop()
-        else tempItems.shift()
+        if (match) {
+          tempItems.push(Number(match[0]))
+          steps.push([...tempItems])
+        }
+      } else if (log.startsWith('Popped ') || log.startsWith('Dequeued ') || log.startsWith('Deleted ')) {
+        const match = log.match(/\d+/)
+        if (match) {
+          const index = tempItems.indexOf(Number(match[0]))
+          if (index !== -1) {
+            tempItems.splice(index, 1)
+            steps.push([...tempItems])
+          }
+        }
       } else if (log.startsWith('Swapped ')) {
         const match = log.match(/Swapped (\d+) and (\d+)/)
         if (match) {
-          const newStep = [...tempItems]
-          const index1 = newStep.indexOf(Number(match[1]))
-          const index2 = newStep.indexOf(Number(match[2]))
-          ;[newStep[index1], newStep[index2]] = [newStep[index2], newStep[index1]]
-          steps.push(newStep)
+          const index1 = tempItems.indexOf(Number(match[1]))
+          const index2 = tempItems.indexOf(Number(match[2]))
+          ;[tempItems[index1], tempItems[index2]] = [tempItems[index2], tempItems[index1]]
+          steps.push([...tempItems])
         }
-      } else if (log.startsWith('Partitioned around pivot ')) {
-        const match = log.match(/Left (.*), Equal (.*), Right (.*)/)
+      } else if (log.startsWith('Partitioned around pivot ') || log.startsWith('Splitting:') || log.startsWith('Merged:')) {
+        const match = log.match(/\[(.*?)\]/g)
         if (match) {
-          const left = JSON.parse(match[1])
-          const equal = JSON.parse(match[2])
-          const right = JSON.parse(match[3])
-          steps.push([...left, ...equal, ...right])
+          const newItems = match[match.length - 1].slice(1, -1).split(',').map(Number)
+          tempItems.splice(0, tempItems.length, ...newItems)
+          steps.push([...tempItems])
         }
-      } else if (log.startsWith('Sorted array:')) {
+      } else if (log.startsWith('Inserted ')) {
+        const match = log.match(/\d+/)
+        if (match) {
+          tempItems.push(Number(match[0]))
+          steps.push([...tempItems])
+        }
+      } else if (log.startsWith('Linked List:')) {
+        const match = log.match(/\d+/g)
+        if (match) {
+          tempItems.splice(0, tempItems.length, ...match.map(Number))
+          steps.push([...tempItems])
+        }
+      } else if (log.startsWith('Current array:') || log.startsWith('Sorted array:') || log.startsWith('Final stack:') || log.startsWith('Final queue:')) {
         const match = log.match(/\[(.*)\]/)
         if (match) {
-          tempItems.push(...match[1].split(',').map(Number))
+          const newItems = match[1].split(',').map(Number)
+          tempItems.splice(0, tempItems.length, ...newItems)
+          steps.push([...tempItems])
         }
       }
     })
@@ -221,6 +433,9 @@ console.log("Sorted array:", sortedArray);`
               <SelectItem value="queue">Queue</SelectItem>
               <SelectItem value="bubbleSort">Bubble Sort</SelectItem>
               <SelectItem value="quickSort">Quick Sort</SelectItem>
+              <SelectItem value="binarySearchTree">Binary Search Tree</SelectItem>
+              <SelectItem value="linkedList">Linked List</SelectItem>
+              <SelectItem value="mergeSort">Merge Sort</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -253,6 +468,7 @@ console.log("Sorted array:", sortedArray);`
             className="h-[400px] mb-2 font-mono text-sm"
           />
           <Button onClick={executeCode} className="w-full">Execute Code</Button>
+          {error && <p className="text-red-500 mt-2">{error}</p>}
         </div>
 
         <div>
@@ -271,7 +487,7 @@ console.log("Sorted array:", sortedArray);`
                   exit={{ opacity: 0, height: 0 }}
                   className="bg-white p-2 mb-2 shadow-md border border-gray-200 rounded text-center"
                   style={{
-                    height: `${item * 3}px`,
+                    height: `${Math.max(20, item * 3)}px`,
                     marginTop: '4px'
                   }}
                 >
