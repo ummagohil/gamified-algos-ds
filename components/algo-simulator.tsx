@@ -148,7 +148,7 @@ console.log("Sorted array:", sortedArray);`
     try {
       // eslint-disable-next-line no-new-func
       new Function('console', code)({ log: consoleLog })
-    } catch (error) {
+    } catch (error:any) {
       consoleLog(`Error: ${error.message}`)
     }
 
